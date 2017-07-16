@@ -1,4 +1,4 @@
-// Copyright 2016 Andreas Pannewitz. All rights reserved.
+﻿// Copyright 2016 Andreas Pannewitz. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -16,6 +16,10 @@
 // or -as a last resort- a constant string such as "<not a Xyz>"
 package ats // anything to a string
 
+import (
+	"do/ami"
+)
+
 // I love to be friendly - thus: I observe different popular API's!
 //  to convert anything to a meaningful text string:
 //
@@ -28,33 +32,30 @@ type Friendly interface {
 }
 
 // an internal type for any observed interface
-
-type stringer string
-
-func (s stringer) String() string {
-	return string(s)
+type stringer interface {
+	String() string
 }
-
-type namer string
-
-func (n namer) Name() string {
-	return string(n)
+type namer interface {
+	Name() string
 }
-
-type geter string
-
-func (g geter) Get() string {
-	return string(g)
+type geter interface {
+	Get() string
+}
+type ider interface {
+	Id() string
 }
 
 // Note: another popular use is as getany interface{ Get() interface{} }.
 // Intentionally we do not support this, as it may lead to infinite recursion.
 // A getany may return a getany, which does not implement any of the other methods ...
 
-type ider string
-
-func (i ider) Id() string {
-	return string(i)
+func notOk(any interface{}, typ string) string {
+	if any == nil {
+		return ""
+		//	return "<ATS: Cannot get '" + typ + "' from '<nil>'!>"
+	} else {
+		return "<ATS: Cannot get '" + typ + "' from '" + ami.TypeName(any) + "'>"
+	}
 }
 
 // Get-Functions - content oriented
@@ -62,39 +63,43 @@ func (i ider) Id() string {
 // GetString: string, String, Get, Name, Id, "<not a String>"
 func GetString(any interface{}) string {
 
-	switch typ := any.(type) {
-	case string:
-		return typ
-	case stringer:
-		return typ.String()
-	case geter:
-		return typ.Get()
-	case namer:
-		return typ.Name()
-	case ider:
-		return typ.Id()
-	default:
-		return "<not a String>"
+	if s, ok := any.(string); ok {
+		return s
 	}
+	if s, ok := any.(stringer); ok {
+		return s.String()
+	}
+	if s, ok := any.(geter); ok {
+		return s.Get()
+	}
+	if s, ok := any.(namer); ok {
+		return s.Name()
+	}
+	if s, ok := any.(ider); ok {
+		return s.Id()
+	}
+	return notOk(any, "string")
 }
 
 // GetGet: Get, String, string, Name, Id, "<not a Get>"
 func GetGet(any interface{}) string {
 
-	switch typ := any.(type) {
-	case geter:
-		return typ.Get()
-	case stringer:
-		return typ.String()
-	case string:
-		return typ
-	case namer:
-		return typ.Name()
-	case ider:
-		return typ.Id()
-	default:
-		return "<not a Get>"
+	if s, ok := any.(geter); ok {
+		return s.Get()
 	}
+	if s, ok := any.(stringer); ok {
+		return s.String()
+	}
+	if s, ok := any.(string); ok {
+		return s
+	}
+	if s, ok := any.(namer); ok {
+		return s.Name()
+	}
+	if s, ok := any.(ider); ok {
+		return s.Id()
+	}
+	return notOk(any, "Get")
 }
 
 // Get-Functions - name/id oriented
@@ -102,37 +107,41 @@ func GetGet(any interface{}) string {
 // GetName: Name, Id, Get, String, string, "<not a Name>"
 func GetName(any interface{}) string {
 
-	switch typ := any.(type) {
-	case namer:
-		return typ.Name()
-	case ider:
-		return typ.Id()
-	case geter:
-		return typ.Get()
-	case stringer:
-		return typ.String()
-	case string:
-		return typ
-	default:
-		return "<not a Name>"
+	if s, ok := any.(namer); ok {
+		return s.Name()
 	}
+	if s, ok := any.(ider); ok {
+		return s.Id()
+	}
+	if s, ok := any.(geter); ok {
+		return s.Get()
+	}
+	if s, ok := any.(stringer); ok {
+		return s.String()
+	}
+	if s, ok := any.(string); ok {
+		return s
+	}
+	return notOk(any, "Name")
 }
 
 // GetId: Id, Name, Get, String, string, "<not an Id>"
 func GetId(any interface{}) string {
 
-	switch typ := any.(type) {
-	case ider:
-		return typ.Id()
-	case namer:
-		return typ.Name()
-	case geter:
-		return typ.Get()
-	case stringer:
-		return typ.String()
-	case string:
-		return typ
-	default:
-		return "<not an Id>"
+	if s, ok := any.(ider); ok {
+		return s.Id()
 	}
+	if s, ok := any.(namer); ok {
+		return s.Name()
+	}
+	if s, ok := any.(geter); ok {
+		return s.Get()
+	}
+	if s, ok := any.(stringer); ok {
+		return s.String()
+	}
+	if s, ok := any.(string); ok {
+		return s
+	}
+	return notOk(any, "Id")
 }
