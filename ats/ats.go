@@ -17,7 +17,7 @@
 package ats // anything to a string
 
 import (
-	"do/ami"
+	"github.com/golangsam/do/ami"
 )
 
 // I love to be friendly - thus: I observe different popular API's!
