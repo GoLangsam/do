@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// package nvp provides helper functions for any KeyValuePair,
+// Package nvp provides helper functions for any KeyValuePair,
 // which satisfies the K/V/GetV = Key/Value interface.
 //
 // TODO: support other popular naming conventions, e.g.
@@ -16,17 +16,19 @@ import (
 	"path"
 )
 
+// Friendly - my interface - exposed for godoc - only ;-)
+//
 // Note: You may like to use my own kind as stuff ;-)
 //  Thus: build a path to where I hide - KeyValuePairly!
 //  just: Using Named() in a loop may not get You much :-(
 //  just the same name over and over ... and over again ...
 //  thus: better use me.Into(key string) to build Your path ;-)
+//
 // How to use? Easy:
 //  Use Into to hide the treasure under another name
 //  Use Leaf to retrieve the treasure
 //  Use NameS or Path - they'll tell You where the treasure is hidden
 //  ... just in case You forgot ;-)
-// Note: this interface is exposed for godoc - only ;-)
 type Friendly interface {
 	NamePath() string                // return the names leading to the hidden treasure as a (cleaned!) "path"
 	Leaf(p KeyValuePair) interface{} // return the treasure hidden deep inside KeyValuePair's
@@ -35,7 +37,7 @@ type Friendly interface {
 
 // var _ Friendly = New("Interface satisfied? :-)")
 
-// the interface "KeyValuePair" allows me to recurse
+// KeyValuePair - this interface allows me to recurse
 // Note: this interface is exposed for godoc - only ;-)
 type KeyValuePair interface {
 	K() string
