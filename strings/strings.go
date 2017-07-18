@@ -48,7 +48,7 @@ func Extract(text, left, right string) (string, error) {
 	}
 }
 
-// Join2 (a convenince for strings.Join) only joins, if both args are non-empty
+// Join2 (a convenience for strings.Join) only joins, if both args are non-empty
 func Join2(a, b string, sep string) string {
 	S := []string{}
 	if len(a) > 0 {
@@ -99,7 +99,7 @@ func SplitAtLast(text, sep string) (head, tail string) {
 	return head, tail
 }
 
-// SplitAllPrefixe looks for all occurences of prefix and
+// SplitAllPrefixe looks for all occurrences of prefix and
 // returns them as head, and text less them as tail.
 // Invariant: len(text) == len(head) + len(tail)
 func SplitAllPrefixe(text, prefix string) (head, tail string) {
@@ -119,7 +119,7 @@ func SplitAllPrefixe(text, prefix string) (head, tail string) {
 	return head, tail
 }
 
-// SplitAllSuffixe looks for all occurences of suffix and
+// SplitAllSuffixe looks for all occurrences of suffix and
 // returns them as tail, and text less them as head.
 // Invariant: len(text) == len(head) + len(tail)
 func SplitAllSuffixe(text, suffix string) (head, tail string) {
