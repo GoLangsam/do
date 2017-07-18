@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package amy / `any meta info` - easy access to meta data
+// Package ami / `any meta info` - easy access to meta data
 //
 // I love to be informative - and even give metadata about my content anything
 //  use TypeName to get the name of the type of my content
@@ -51,11 +51,12 @@ func TypeIsComparable(any interface{}) bool {
 // TypeIsVariadic returns the `reflect.TypeOf(any).IsVariadic()` (and `false` for any non-Func)
 func TypeIsVariadic(any interface{}) bool {
 	t := reflect.TypeOf(any)
+
 	if t.Kind() != reflect.Func {
 		return false
-	} else {
-		return t.IsVariadic()
 	}
+
+	return t.IsVariadic()
 }
 
 // excerpts obtained via "godoc reflect" - temprarily copied for local reference
