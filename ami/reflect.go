@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// package amy / any meta info - easy access to meta data
+// Package amy / `any meta info` - easy access to meta data
 //
 // I love to be informative - and even give metadata about my content anything
 //  use TypeName to get the name of the type of my content
@@ -18,31 +18,37 @@ import (
 	"reflect"
 )
 
+// TypeName returns the `reflect.TypeOf(any).Name()`
 func TypeName(any interface{}) string {
 	t := reflect.TypeOf(any)
 	return t.Name()
 }
 
+// TypePkgPath returns the `reflect.TypeOf(any).PkgPath()`
 func TypePkgPath(any interface{}) string {
 	t := reflect.TypeOf(any)
 	return t.PkgPath()
 }
 
+// TypeString returns the `reflect.TypeOf(any).String()`
 func TypeString(any interface{}) string {
 	t := reflect.TypeOf(any)
 	return t.String()
 }
 
+// TypeKind returns the `reflect.TypeOf(any).Kind().String()`
 func TypeKind(any interface{}) string {
 	t := reflect.TypeOf(any)
 	return t.Kind().String()
 }
 
+// TypeIsComparable returns the `reflect.TypeOf(any).Comparable()`
 func TypeIsComparable(any interface{}) bool {
 	t := reflect.TypeOf(any)
 	return t.Comparable()
 }
 
+// TypeIsVariadic returns the `reflect.TypeOf(any).IsVariadic()` (and `false` for any non-Func)
 func TypeIsVariadic(any interface{}) bool {
 	t := reflect.TypeOf(any)
 	if t.Kind() != reflect.Func {
