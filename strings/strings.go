@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-//package ds provides useless string functions which (s)c(h)ould be in "strings" but are not (yet) there.
+//Package ds provides useless string functions which (s)c(h)ould be in "strings" but are not (yet) there.
+//  Note: `ds` is shorthand for `do strings`.
 package ds // do strings
 
 import (
@@ -75,7 +76,8 @@ func UnBracket(in, bo, bc string) string {
 	return strings.TrimLeft(strings.TrimRight(in, bc), bo)
 }
 
-// SplitAtFirst
+// SplitAtFirst separates `text` at first `sep` into `head` and `tail`.
+// If there is no `sep`, all `text` becomes `tail`.
 func SplitAtFirst(text, sep string) (head, tail string) {
 	tail = text
 	if len(sep) > 0 {
@@ -87,7 +89,8 @@ func SplitAtFirst(text, sep string) (head, tail string) {
 	return head, tail
 }
 
-// SplitAtLast
+// SplitAtLast separates `text` at last `sep` into `head` and `tail`.
+// If there is no `sep`, all `text` becomes `head`.
 func SplitAtLast(text, sep string) (head, tail string) {
 	head = text
 	if len(sep) > 0 {
