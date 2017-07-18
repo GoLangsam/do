@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// package ats (= any to string) provides functions to Get a string from 'anything' (= interface{})
+// Package ats (= any to string) provides functions to Get a string from 'anything' (= interface{})
 //
 // ats observes different conventions of 'things' (=objects) to do so:
 //  stringer: String() - fmt.Stringer & friends
@@ -20,10 +20,10 @@ import (
 	"github.com/golangsam/do/ami"
 )
 
+// Friendly - my interface - exposed for godoc - only ;-)
+//
 // I love to be friendly - thus: I observe different popular API's!
 //  to convert anything to a meaningful text string:
-//
-// Note: this interface is exposed for godoc - only ;-)
 type Friendly interface {
 	String() string // fmt.Stringer & friends
 	Name() string   // filepath.File & .FileInfo, text/template.Template ...
@@ -51,16 +51,14 @@ type ider interface {
 
 func notOk(any interface{}, typ string) string {
 	if any == nil {
-		return ""
-		//	return "<ATS: Cannot get '" + typ + "' from '<nil>'!>"
-	} else {
-		return "<ATS: Cannot get '" + typ + "' from '" + ami.TypeName(any) + "'>"
+		return "" //	return "<ATS: Cannot get '" + typ + "' from '<nil>'!>"
 	}
+	return "<ATS: Cannot get '" + typ + "' from '" + ami.TypeName(any) + "'>"
 }
 
 // Get-Functions - content oriented
 
-// GetString: string, String, Get, Name, Id, "<not a String>"
+// GetString - order: string, String, Get, Name, Id, "<not a String>"
 func GetString(any interface{}) string {
 
 	if s, ok := any.(string); ok {
@@ -81,7 +79,7 @@ func GetString(any interface{}) string {
 	return notOk(any, "string")
 }
 
-// GetGet: Get, String, string, Name, Id, "<not a Get>"
+// GetGet - order: Get, String, string, Name, Id, "<not a Get>"
 func GetGet(any interface{}) string {
 
 	if s, ok := any.(geter); ok {
@@ -104,7 +102,7 @@ func GetGet(any interface{}) string {
 
 // Get-Functions - name/id oriented
 
-// GetName: Name, Id, Get, String, string, "<not a Name>"
+// GetName - order: Name, Id, Get, String, string, "<not a Name>"
 func GetName(any interface{}) string {
 
 	if s, ok := any.(namer); ok {
@@ -125,7 +123,7 @@ func GetName(any interface{}) string {
 	return notOk(any, "Name")
 }
 
-// GetId: Id, Name, Get, String, string, "<not an Id>"
+// GetId - order: Id, Name, Get, String, string, "<not an Id>"
 func GetId(any interface{}) string {
 
 	if s, ok := any.(ider); ok {
