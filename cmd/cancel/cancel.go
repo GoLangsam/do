@@ -6,6 +6,7 @@
 package cancel
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -30,35 +31,8 @@ func init() {
 	signal.Notify(ctrlC, syscall.SIGHUP)
 }
 
-// exit aborts the program with a hard exit(1)
-func exit() {
-	println("Program aborted!")
-	os.Exit(1)
-}
-
-// Canceler launches a go routine which checks every n milliSeconds (n > 10)
-// and terminates via os.Exit(1) if Cancelled() returns true.
-func Canceler(ns ...int) {
-	n := 100
-	if len(ns) > 0 {
-		n = ns[0]
-	}
-	if n < 11 {
-		n = 11
-	}
-	go func() {
-		for {
-			if Cancelled() {
-				exit()
-			} else {
-				time.Sleep(time.Duration(n) * time.Millisecond)
-			}
-		}
-	}()
-}
-
-// Cancelled is a convenient alternative to brute force Canceler
-func Cancelled() bool {
+// cancelled is a convenience
+func cancelled() bool {
 	select {
 	case <-cancel:
 		return true
@@ -71,4 +45,45 @@ func Cancelled() bool {
 	default:
 		return false
 	}
+}
+
+// exit aborts the program with a hard exit(1) after printing the error
+func exit(err error) {
+	println(err.Error())
+	os.Exit(1)
+}
+
+// Canceler launches a go routine which checks every n milliSeconds (n > 10)
+// and terminates via os.Exit(1) if Cancelled() returns true.
+func Canceler(ns ...int) (ctx context.Context) {
+	ctx, cancel := context.WithCancel(context.Background())
+
+	n := 100
+	if len(ns) > 0 {
+		n = ns[0]
+	}
+	if n < 11 {
+		n = 11
+	}
+	go func(ns int, cancel context.CancelFunc) {
+		for {
+			if cancelled() {
+				cancel()
+				return
+			} else {
+				time.Sleep(time.Duration(ns) * time.Millisecond)
+			}
+		}
+	}(n, cancel)
+
+	go func(ctx context.Context) error {
+		for {
+			select {
+			case <-ctx.Done():
+				exit(ctx.Err())
+			}
+		}
+	}(ctx)
+
+	return ctx
 }
