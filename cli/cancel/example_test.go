@@ -28,7 +28,11 @@ func doneMainOperation(ctx context.Context) <-chan struct{} {
 	return cha
 }
 
-func ExampleBackground() {
+func ExampleReStart() {
+	cancel.ReStart() // no need in Your main.go
+}
+
+func ExampleBackGround() {
 	cancel.ReStart() // no need in Your main.go
 
 	root := cancel.BackGround()

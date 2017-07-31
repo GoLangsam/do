@@ -6,13 +6,14 @@
 //
 // Function names match the underlying context package -
 // just: their call signatures do not need any parent context.
+//
 // And: they build upon each other: You'll need only one.
 //
 // Choose exactly one from:
 //  - WithCancel()      - includes BackGround, and listen
 //  - WithTimeout(...)  - includes WithCancel, and waiter
 //  - WithDeadline(...) - includes WithCancel, and waiter
-// to get Your observed root context.
+// to get Your observed base context.
 //
 // When You like to switch-off any cancellation (temporarily),
 // You may use
@@ -98,8 +99,8 @@ func listen(cancel context.CancelFunc, msDelay ...int) {
 }
 
 // waiter applies the returned parent-CancelFunc, iff
-// internal parent WithCancel-context or
-// returned WithDeadline-child context
+//  - internal parent WithCancel-context or
+//  - returned WithDeadline-child context
 // become canceled
 func waiter(one, two context.Context, cancel context.CancelFunc) {
 	defer cancel()
@@ -133,8 +134,8 @@ func WithCancel() (ctx context.Context, cancel context.CancelFunc) {
 
 // WithDeadline gives You an initial root context (and a CancelFunc)
 // and spawns `waiter` which cancels the context upon
-// - any cancellation event
-// - deadline expires
+//  - any cancellation event
+//  - deadline expires
 // whichever is seen first
 func WithDeadline(deadline time.Time) (ctx context.Context, cancel context.CancelFunc) {
 	parent, cancel := WithCancel()
@@ -147,18 +148,10 @@ func WithDeadline(deadline time.Time) (ctx context.Context, cancel context.Cance
 
 // WithTimeout gives You an initial rooted context (and a CancelFunc)
 // and spawns `waiter` which cancels the context upon
-// - any cancellation event
-// - timeout elapses
+//  - any cancellation event
+//  - timeout elapses
 // whichever is seen first
 // Note: WithTimeout is simply a convenience for `WithDeadline(time.Now().Add(timeout))`.
 func WithTimeout(timeout time.Duration) (ctx context.Context, cancel context.CancelFunc) {
 	return WithDeadline(time.Now().Add(timeout))
 }
-
-// Thus, simply have Your main operation invoke the returned CancelFunc upon completition,
-//   (Hint: You may like to defer the returned CancelFunc there, but You don't have to).
-// and simply await `<-ctx.Done()` (*un*conditionally!) just before Your `main()` exits.
-//
-// Or You just `select` to wait for either:
-// - a `<-ctx.Done()` in order to shutdown gracefully
-// - a signal of sucessfull termination from your main operation
