@@ -22,13 +22,13 @@ import (
 
 // Friendly - my interface - exposed for godoc - only ;-)
 //
-// I love to be friendly - thus: I observe different popular API's!
-//  to convert anything to a meaningful text string:
+// I love to be friendly - thus: I observe different popular API's
+// to convert anything to a meaningful text string
 type Friendly interface {
-	String() string // fmt.Stringer & friends
-	Name() string   // filepath.File & .FileInfo, text/template.Template ...
-	Get() string    // do/Value
-	Id() string     // ...
+	GetString() string // fmt.Stringer & friends
+	GetName() string   // filepath.File & .FileInfo, text/template.Template ...
+	GetGet() string    // do/Value
+	GetId() string     // ...
 }
 
 // an internal type for any observed interface
