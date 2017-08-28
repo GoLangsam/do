@@ -39,7 +39,6 @@ import (
 	"context"
 	"os"
 	"os/signal"
-	"syscall"
 	"time"
 )
 
@@ -61,10 +60,8 @@ func ReStart() {
 
 // event channels
 var (
-	newline   = make(chan struct{})  // Enter
-	kill      = make(chan os.Signal) // os.Kill
-	interrupt = make(chan os.Signal) // os.Interrupt
-	ctrlC     = make(chan os.Signal) // syscall.SIGHUP
+	newline = make(chan struct{}, 16)
+	signals = make(chan os.Signal, 16)
 )
 
 func init() {
@@ -74,9 +71,7 @@ func init() {
 		os.Stdin.Read(make([]byte, 1)) // read a single byte
 		newline <- struct{}{}          // signal cancel
 	}()
-	signal.Notify(kill, os.Kill)
-	signal.Notify(interrupt, os.Interrupt)
-	signal.Notify(ctrlC, syscall.SIGHUP)
+	signal.Notify(signals, os.Kill, os.Interrupt)
 }
 
 // listen applies the given CancelFunc iff some cancellation is seen by cancelled()
@@ -86,11 +81,7 @@ func listen(cancel context.CancelFunc, msDelay ...int) {
 		select {
 		case <-newline:
 			return
-		case <-ctrlC:
-			return
-		case <-kill:
-			return
-		case <-interrupt:
+		case <-signals:
 			return
 		default:
 			time.Sleep(100 * time.Millisecond) // as in
