@@ -8,7 +8,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/golangsam/do/cli/cancel"
+	"github.com/GoLangsam/do/cli/cancel"
 )
 
 func mainOperation(ctx context.Context) {

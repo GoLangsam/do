@@ -17,7 +17,7 @@
 package ats // anything to a string
 
 import (
-	"github.com/golangsam/do/ami"
+	"github.com/GoLangsam/do/ami"
 )
 
 // Friendly - my interface - exposed for godoc - only ;-)

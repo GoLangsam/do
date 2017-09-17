@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/golangsam/do/cli/cancel"
+	"github.com/GoLangsam/do/cli/cancel"
 )
 
 func main() {
