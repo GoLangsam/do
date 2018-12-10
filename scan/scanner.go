@@ -46,3 +46,9 @@ func LinesOfWords(r io.Reader, skipEmptyLines bool) <-chan []string {
 	go linesOfWords(cha, r, skipEmptyLines)
 	return cha
 }
+
+// WordsPerLine returns a channel to receive the slice of words as found in each line.
+// Only non-empty lines are considered, thus all no empty
+func WordsPerLine(r io.Reader) <-chan []string {
+	return LinesOfWords(r, true)
+}
