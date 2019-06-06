@@ -25,17 +25,17 @@ func linesOfWords(out chan<- []string, r io.Reader, skipEmptyLines bool) {
 			words = append(words, scanner.Text())
 		}
 		if err := scanner.Err(); err != nil {
-			log.Fatal("Word-Scanner encountered:", err)
+			log.Panic("Word-Scanner encountered:", err)
 		}
 
-		if skipEmptyLines && len(words) < 1 {
+		if skipEmptyLines && len(words) == 0 {
 			continue
 		}
 
 		out <- words
 	}
 	if err := scanner.Err(); err != nil {
-		log.Fatal("Line-Scanner encountered:", err)
+		log.Panic("Line-Scanner encountered:", err)
 	}
 	return
 }
