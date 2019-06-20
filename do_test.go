@@ -51,17 +51,27 @@ func Example_interfaces() {
 		WrapIt(fs ...do.It) do.Err
 	}
 
+	// Opter represents anyone who can provide some option
+	// - usually as a closure around itself.
+	type Opter interface {
+		Do() do.Opt
+		Join(...do.Opt) do.Opt
+		WrapIt(fs ...do.It) do.Opt
+	}
+
 	var doit do.It = func() { return }
 	var ok do.Ok = func() bool { return true }
 	var iff do.If
 	var nok do.Nok = func() bool { return false }
 	var err do.Err = func() error { return nil }
+	var opt do.Opt
 
 	var _ Doer = &doit
 	var _ Iffer = &iff
 	var _ Oker = &ok
 	var _ Noker = &nok
 	var _ Errer = &err
+	var _ Opter = &opt
 
 }
 
