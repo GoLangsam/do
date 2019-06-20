@@ -40,7 +40,7 @@ func Options(a interface{}, options ...Option) Opt {
 	prev := make([]Opt, 0, len(options))
 
 	for i := range options { // apply each and remember it's undo
-		prev = append(prev, options[i](a).Do())
+		prev = append(prev, options[i](a))
 	}
 
 	return func() Opt {
@@ -67,7 +67,7 @@ func undo(doit ...Opt) Opt {
 	case 1:
 		return doit[0]()
 	case 0:
-		return undo()
+		return func() Opt { return undo() }
 	default:
 		prev := make([]Opt, 0, len(doit))
 		for i := len(doit) - 1; i >= 0; i-- {
