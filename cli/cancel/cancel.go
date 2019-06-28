@@ -60,8 +60,8 @@ func ReStart() {
 
 // event channels
 var (
-	newline = make(chan struct{}, 16)
-	signals = make(chan os.Signal, 16)
+	newline = make(chan struct{})
+	signals = make(chan os.Signal)
 )
 
 func init() {
