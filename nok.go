@@ -23,7 +23,7 @@ func (a Nok) Do() bool {
 
 // ===========================================================================
 
-// Join returns a closure around given fs.
+// NokJoin returns a closure around given fs.
 //
 // Iff there are no fs, nil is returned, and
 // iff there is only one fs, this single fs is returned.
@@ -31,7 +31,9 @@ func (a Nok) Do() bool {
 // Evaluate the returned function
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
-func (do *Nok) Join(fs ...Nok) Nok {
+//
+// Note: Order matters - evaluation terminates on first exceptional (non-default) result.
+func NokJoin(fs ...Nok) Nok {
 	switch len(fs) {
 	case 0:
 		return nil
@@ -51,7 +53,7 @@ func (do *Nok) Join(fs ...Nok) Nok {
 
 // ===========================================================================
 
-// WrapIt returns a Nok function
+// NokWrapIt returns a Nok function
 // which Do()es the Join of the given fs
 // and returns its default, namely: `false`,
 // upon evaluation.
@@ -60,11 +62,10 @@ func (do *Nok) Join(fs ...Nok) Nok {
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
 //
-// WrapIt is a convenient method.
-func (do *Nok) WrapIt(fs ...It) Nok {
+// NokWrapIt is a convenient method.
+func NokWrapIt(fs ...It) Nok {
 	return func() bool {
-		var it It
-		it.Join(fs...).Do()
+		ItJoin(fs...).Do()
 		return false
 	}
 }

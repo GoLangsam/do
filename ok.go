@@ -23,7 +23,7 @@ func (a Ok) Do() bool {
 
 // ===========================================================================
 
-// Join returns a closure around given fs.
+// OkJoin returns a closure around given fs.
 //
 // Iff there are no fs, nil is returned, and
 // iff there is only one fs, this single fs is returned.
@@ -31,7 +31,9 @@ func (a Ok) Do() bool {
 // Evaluate the returned function
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
-func (do *Ok) Join(fs ...Ok) Ok {
+//
+// Note: Order matters - evaluation terminates on first exceptional (non-default) result.
+func OkJoin(fs ...Ok) Ok {
 	switch len(fs) {
 	case 0:
 		return nil
@@ -51,7 +53,7 @@ func (do *Ok) Join(fs ...Ok) Ok {
 
 // ===========================================================================
 
-// WrapIt returns an Ok function
+// OkWrapIt returns an Ok function
 // which Do()es the Join of the given fs
 // and returns its default, namely: `true`,
 // upon evaluation.
@@ -60,11 +62,10 @@ func (do *Ok) Join(fs ...Ok) Ok {
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
 //
-// WrapIt is a convenient method.
-func (do *Ok) WrapIt(fs ...It) Ok {
+// OkWrapIt is a convenient method.
+func OkWrapIt(fs ...It) Ok {
 	return func() bool {
-		var it It
-		it.Join(fs...).Do()
+		ItJoin(fs...).Do()
 		return true
 	}
 }

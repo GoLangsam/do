@@ -21,7 +21,7 @@ func (a It) Do() {
 
 // ===========================================================================
 
-// Join returns a closure around given fs.
+// ItJoin returns a closure around given fs.
 //
 // Iff there are no fs, nil is returned, and
 // iff there is only one fs, this single fs is returned.
@@ -29,7 +29,7 @@ func (a It) Do() {
 // Evaluate the returned function
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
-func (do *It) Join(fs ...It) It {
+func ItJoin(fs ...It) It {
 	switch len(fs) {
 	case 0:
 		return nil

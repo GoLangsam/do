@@ -26,7 +26,7 @@ func (a Opt) Do() Opt {
 
 // ===========================================================================
 
-// Join returns a closure around given fs.
+// OptJoin returns a closure around given fs.
 //
 // Iff there are no fs, a nop.Opt is returned, and
 // iff there is only one fs, this single fs is returned.
@@ -34,7 +34,7 @@ func (a Opt) Do() Opt {
 // Evaluate the returned function
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
-func (do *Opt) Join(fs ...Opt) Opt {
+func OptJoin(fs ...Opt) Opt {
 	switch len(fs) {
 	case 0:
 		return nopOpt
@@ -47,7 +47,7 @@ func (do *Opt) Join(fs ...Opt) Opt {
 
 // ===========================================================================
 
-// WrapIt returns an Opt function
+// OptWrapIt returns an Opt function
 // which Do()es the Join of the given fs
 // and returns its default, namely it's undo Opt,
 // upon evaluation.
@@ -56,16 +56,15 @@ func (do *Opt) Join(fs ...Opt) Opt {
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
 //
-// WrapIt may look like a convenient method.
+// OptWrapIt may look like a convenient method.
 //
 // Just beware:
-//  WrapIt violates the option contract:
+//  OptWrapIt violates the option contract:
 //  no working undo Opt is returned
 //  only a nop.Opt.
-func (do *Opt) WrapIt(fs ...It) Opt {
+func OptWrapIt(fs ...It) Opt {
 	return func() Opt {
-		var it It
-		it.Join(fs...).Do()
+		ItJoin(fs...).Do()
 		return nopOpt
 	}
 }

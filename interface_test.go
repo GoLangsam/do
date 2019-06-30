@@ -16,7 +16,6 @@ func Example_interfaces() {
 	// - usually as a closure around itself.
 	type Doer interface {
 		Do()
-		Join(...do.It) do.It
 	}
 
 	// Iffer represents anyone who can apply some action iff.
@@ -30,8 +29,6 @@ func Example_interfaces() {
 	// - usually as a closure around itself.
 	type Oker interface {
 		Do() bool
-		Join(...do.Ok) do.Ok
-		WrapIt(fs ...do.It) do.Ok
 	}
 
 	// Noker represents anyone who can provide some boolean
@@ -39,24 +36,18 @@ func Example_interfaces() {
 	// - usually as a closure around itself.
 	type Noker interface {
 		Do() bool
-		Join(...do.Nok) do.Nok
-		WrapIt(fs ...do.It) do.Nok
 	}
 
 	// Errer represents anyone who can provide some error
 	// - usually as a closure around itself.
 	type Errer interface {
 		Do() error
-		Join(...do.Err) do.Err
-		WrapIt(fs ...do.It) do.Err
 	}
 
 	// Opter represents anyone who can provide some option
 	// - usually as a closure around itself.
 	type Opter interface {
 		Do() do.Opt
-		Join(...do.Opt) do.Opt
-		WrapIt(fs ...do.It) do.Opt
 	}
 
 	var doit do.It = func() { return }

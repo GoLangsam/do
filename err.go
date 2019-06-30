@@ -23,7 +23,7 @@ func (a Err) Do() error {
 
 // ===========================================================================
 
-// Join returns a closure around given fs.
+// ErrJoin returns a closure around given fs.
 //
 // Iff there are no fs, nil is returned, and
 // iff there is only one fs, this single fs is returned.
@@ -31,7 +31,9 @@ func (a Err) Do() error {
 // Evaluate the returned function
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
-func (do *Err) Join(fs ...Err) Err {
+//
+// Note: Order matters - evaluation terminates on first exceptional (non-default) result.
+func ErrJoin(fs ...Err) Err {
 	switch len(fs) {
 	case 0:
 		return nil
@@ -53,7 +55,7 @@ func (do *Err) Join(fs ...Err) Err {
 
 // ===========================================================================
 
-// WrapIt returns an Err function
+// ErrWrapIt returns an Err function
 // which Do()es the Join of the given fs
 // and returns its default, namely: `nil`,
 // upon evaluation.
@@ -62,11 +64,10 @@ func (do *Err) Join(fs ...Err) Err {
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
 //
-// WrapIt is a convenient method.
-func (do *Err) WrapIt(fs ...It) Err {
+// ErrWrapIt is a convenient method.
+func ErrWrapIt(fs ...It) Err {
 	return func() error {
-		var it It
-		it.Join(fs...).Do()
+		ItJoin(fs...).Do()
 		return nil
 	}
 }
