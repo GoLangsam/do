@@ -11,9 +11,10 @@ package do
 //
 // Opt is a self referential function
 // obtained when some Option is applied
-// and should returns it's own undo Opt.
+// and should return its own undo Opt.
 //
-// The null value is useful: its Do() is a nop and returns a nop.Opt.
+// The null value is useful: its Do() never does anything
+// as it is a nop and returns a nop.Opt.
 type Opt func() Opt
 
 // Do applies Opt iff Opt is not nil.
@@ -32,7 +33,7 @@ func (a Opt) Do() Opt {
 // iff there is only one fs, this single fs is returned.
 //
 // Evaluate the returned function
-// by invoking it's Do() or
+// by invoking its Do() or
 // by invoking it directly, iff not nil.
 func OptJoin(fs ...Opt) Opt {
 	switch len(fs) {
@@ -47,24 +48,52 @@ func OptJoin(fs ...Opt) Opt {
 
 // ===========================================================================
 
-// OptWrapIt returns an Opt function
-// which Do()es the Join of the given fs
-// and returns its default, namely it's undo Opt,
+// Set sets all opts as the new opt
+// when the returned Option is applied.
+func (opt *Opt) Set(opts ...Opt) Option {
+	return func(any interface{}) Opt {
+		prev := *opt
+		*opt = OptJoin(opts...)
+		return func() Opt {
+			return (*opt).Set(prev)(any)
+		}
+	}
+}
+
+// Add adds all opts before the existing opt
+// when the returned Option is applied.
+func (opt *Opt) Add(opts ...Opt) Option {
+	if opt == nil || *opt == nil {
+		return (*opt).Set(opts...)
+	}
+	return func(any interface{}) Opt {
+		prev := *opt
+		*opt = OptJoin(append(opts, prev)...)
+		return func() Opt {
+			return (*opt).Set(prev)(any)
+		}
+	}
+}
+
+// ===========================================================================
+
+// OptIt returns an Opt function
+// which Do()es the Join of the given its
+// and returns the default, namely: its undo Opt,
 // upon evaluation.
 //
 // Evaluate the returned function
-// by invoking it's Do() or
+// by invoking its Do() or
 // by invoking it directly, iff not nil.
 //
-// OptWrapIt may look like a convenient method.
+// OptIt may look like a convenient wrapper.
 //
-// Just beware:
-//  OptWrapIt violates the option contract:
-//  no working undo Opt is returned
-//  only a nop.Opt.
-func OptWrapIt(fs ...It) Opt {
+//  Just beware: OptIt violates the option contract!
+//  No working undo Opt is returned - only a nop.Opt.
+func OptIt(its ...It) Opt {
 	return func() Opt {
-		ItJoin(fs...).Do()
+		it := ItJoin(its...)
+		(&it).Do()
 		return nopOpt
 	}
 }

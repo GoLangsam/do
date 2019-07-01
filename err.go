@@ -9,7 +9,7 @@ package do
 // Err represents some action
 // which might go wrong (for some reason).
 //
-// The null value is useful: its Do() returns nil.
+// The null value is useful: its Do() never returns a non-nil error.
 type Err func() error
 
 // Do evaluates Err iff Err is not nil,
@@ -29,7 +29,7 @@ func (a Err) Do() error {
 // iff there is only one fs, this single fs is returned.
 //
 // Evaluate the returned function
-// by invoking it's Do() or
+// by invoking its Do() or
 // by invoking it directly, iff not nil.
 //
 // Note: Order matters - evaluation terminates on first exceptional (non-default) result.
@@ -55,19 +55,49 @@ func ErrJoin(fs ...Err) Err {
 
 // ===========================================================================
 
-// ErrWrapIt returns an Err function
-// which Do()es the Join of the given fs
-// and returns its default, namely: `nil`,
+// Set sets all errs as the new err
+// when the returned Option is applied.
+func (err *Err) Set(errs ...Err) Option {
+	return func(any interface{}) Opt {
+		prev := *err
+		*err = ErrJoin(errs...)
+		return func() Opt {
+			return (*err).Set(prev)(any)
+		}
+	}
+}
+
+// Add adds all errs before the existing err
+// when the returned Option is applied.
+func (err *Err) Add(errs ...Err) Option {
+	if err == nil || *err == nil {
+		return (*err).Set(errs...)
+	}
+	return func(any interface{}) Opt {
+		prev := *err
+		*err = ErrJoin(append(errs, prev)...)
+		return func() Opt {
+			return (*err).Set(prev)(any)
+		}
+	}
+}
+
+// ===========================================================================
+
+// ErrIt returns an Err function
+// which Do()es the Join of the given its
+// and returns the default, namely: `nil`,
 // upon evaluation.
 //
 // Evaluate the returned function
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
 //
-// ErrWrapIt is a convenient method.
-func ErrWrapIt(fs ...It) Err {
+// ErrIt is a convenient wrapper.
+func ErrIt(its ...It) Err {
 	return func() error {
-		ItJoin(fs...).Do()
+		it := ItJoin(its...)
+		(&it).Do()
 		return nil
 	}
 }

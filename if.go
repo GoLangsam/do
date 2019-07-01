@@ -14,17 +14,31 @@ package do
 //
 // Intended use is for conditional logging, counting etc.
 //
-// The null value is useful: its Do() is a nop.
+// The null value is useful: its Do() never does anything, it's a nop.
 type If struct {
 	It
 	If bool
 }
 
-// Do applies It iff If and It is not nil,
+// Do applies It iff If is true and It is not nil,
 // and makes If a Doer.
 func (a If) Do() {
 	if a.If && a.It != nil {
 		a.It()
+	}
+}
+
+// ===========================================================================
+
+// Iff makes iff the new If value
+// when the returned Option is applied.
+func (fn *If) Iff(iff bool) Option {
+	return func(any interface{}) Opt {
+		prev := (*fn).If
+		(*fn).If = iff
+		return func() Opt {
+			return (*fn).Iff(prev)(any)
+		}
 	}
 }
 

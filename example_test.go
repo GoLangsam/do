@@ -49,6 +49,26 @@ func ExampleOpt() {
 	// Element One
 }
 
+func ExampleOptionJoin() {
+	e := list.NewList("TestList", "Element One").Front()
+	fmt.Println(e.Value) // Element One
+
+	undo := do.OptionJoin(Value(3), Value("5"), Value(7))(e)
+	fmt.Println(e.Value) // 7 (temporarily)
+
+	redo := undo()
+	fmt.Println(e.Value) // Element One (temporary setting undone)
+
+	_ = redo()
+	fmt.Println(e.Value) // 7 (undo undone)
+
+	// Output:
+	// Element One
+	// 7
+	// Element One
+	// 7
+}
+
 func ExampleOptions() {
 	e := list.NewList("TestList", "Element One").Front()
 	fmt.Println(e.Value) // Element One

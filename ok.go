@@ -14,9 +14,9 @@ type Ok func() bool
 
 // Do applies Ok iff Ok is not nil,
 // and makes Ok an Oker.
-func (a Ok) Do() bool {
-	if a != nil {
-		return a()
+func (ok *Ok) Do() bool {
+	if *ok != nil {
+		return (*ok)()
 	}
 	return true
 }
@@ -29,7 +29,7 @@ func (a Ok) Do() bool {
 // iff there is only one fs, this single fs is returned.
 //
 // Evaluate the returned function
-// by invoking it's Do() or
+// by invoking its Do() or
 // by invoking it directly, iff not nil.
 //
 // Note: Order matters - evaluation terminates on first exceptional (non-default) result.
@@ -42,7 +42,7 @@ func OkJoin(fs ...Ok) Ok {
 	default:
 		return func() bool {
 			for _, f := range fs {
-				if !f.Do() {
+				if !(&f).Do() {
 					return false
 				}
 			}
@@ -53,19 +53,49 @@ func OkJoin(fs ...Ok) Ok {
 
 // ===========================================================================
 
-// OkWrapIt returns an Ok function
-// which Do()es the Join of the given fs
-// and returns its default, namely: `true`,
+// Set sets all oks as the new ok
+// when the returned Option is applied.
+func (ok *Ok) Set(oks ...Ok) Option {
+	return func(any interface{}) Opt {
+		prev := *ok
+		*ok = OkJoin(oks...)
+		return func() Opt {
+			return (*ok).Set(prev)(any)
+		}
+	}
+}
+
+// Add adds all oks before the existing ok
+// when the returned Option is applied.
+func (ok *Ok) Add(oks ...Ok) Option {
+	if ok == nil || *ok == nil {
+		return (*ok).Set(oks...)
+	}
+	return func(any interface{}) Opt {
+		prev := *ok
+		*ok = OkJoin(append(oks, prev)...)
+		return func() Opt {
+			return (*ok).Set(prev)(any)
+		}
+	}
+}
+
+// ===========================================================================
+
+// OkIt returns an Ok function
+// which Do()es the Join of the given its
+// and returns the default, namely: `true`,
 // upon evaluation.
 //
 // Evaluate the returned function
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
 //
-// OkWrapIt is a convenient method.
-func OkWrapIt(fs ...It) Ok {
+// OkIt is a convenient wrapper.
+func OkIt(its ...It) Ok {
 	return func() bool {
-		ItJoin(fs...).Do()
+		it := ItJoin(its...)
+		(&it).Do()
 		return true
 	}
 }

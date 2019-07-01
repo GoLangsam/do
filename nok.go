@@ -14,9 +14,9 @@ type Nok func() bool
 
 // Do applies Ok iff Ok is not nil,
 // and makes Ok an Oker.
-func (a Nok) Do() bool {
-	if a != nil {
-		return a()
+func (nok *Nok) Do() bool {
+	if *nok != nil {
+		return (*nok)()
 	}
 	return false
 }
@@ -29,7 +29,7 @@ func (a Nok) Do() bool {
 // iff there is only one fs, this single fs is returned.
 //
 // Evaluate the returned function
-// by invoking it's Do() or
+// by invoking its Do() or
 // by invoking it directly, iff not nil.
 //
 // Note: Order matters - evaluation terminates on first exceptional (non-default) result.
@@ -42,7 +42,7 @@ func NokJoin(fs ...Nok) Nok {
 	default:
 		return func() bool {
 			for _, f := range fs {
-				if f.Do() {
+				if (&f).Do() {
 					return true
 				}
 			}
@@ -53,19 +53,49 @@ func NokJoin(fs ...Nok) Nok {
 
 // ===========================================================================
 
-// NokWrapIt returns a Nok function
-// which Do()es the Join of the given fs
-// and returns its default, namely: `false`,
+// Set sets all noks as the new nok
+// when the returned Option is applied.
+func (nok *Nok) Set(noks ...Nok) Option {
+	return func(any interface{}) Opt {
+		prev := *nok
+		*nok = NokJoin(noks...)
+		return func() Opt {
+			return (*nok).Set(prev)(any)
+		}
+	}
+}
+
+// Add adds all noks before the receiver nok
+// when the returned Option is applied.
+func (nok *Nok) Add(noks ...Nok) Option {
+	if nok == nil || *nok == nil {
+		return (*nok).Set(noks...)
+	}
+	return func(any interface{}) Opt {
+		prev := *nok
+		*nok = NokJoin(append(noks, prev)...)
+		return func() Opt {
+			return (*nok).Set(prev)(any)
+		}
+	}
+}
+
+// ===========================================================================
+
+// NokIt returns a Nok function
+// which Do()es the Join of the given its
+// and returns the default, namely: `false`,
 // upon evaluation.
 //
 // Evaluate the returned function
 // by invoking it's Do() or
 // by invoking it directly, iff not nil.
 //
-// NokWrapIt is a convenient method.
-func NokWrapIt(fs ...It) Nok {
+// NokIt is a convenient wrapper.
+func NokIt(its ...It) Nok {
 	return func() bool {
-		ItJoin(fs...).Do()
+		it := ItJoin(its...)
+		(&it).Do()
 		return false
 	}
 }

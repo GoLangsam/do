@@ -18,7 +18,7 @@ package do
 // Hint: To apply multiple options at once, use do.Options(a, opts...).
 //
 // Note: Option will panic iff applied to the wrong type of object.
-// (That is due to the known need of some type assertion in Go.)
+// (This is due to the known need of Go to assert the type dynamically.)
 //
 // Hint: Provide Your own Options method and catch any panic in there.
 //
@@ -26,7 +26,7 @@ package do
 //   - http://commandcenter.blogspot.com.au/2014/01/self-referential-functions-and-design.html
 //   - https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
 //   - https://www.calhoun.io/using-functional-options-instead-of-method-chaining-in-go/
-// (Just: Undo is only supported for the last Option passed in these samples.)
+// (Just: in these samples Undo is only supported for the last Option passed.)
 //
 // This implementation of do.Options(myType, myOpts...) provides full undo.
 type Option func(interface{}) Opt
@@ -78,3 +78,78 @@ func undo(doit ...Opt) Opt {
 		}
 	}
 }
+
+// ===========================================================================
+
+// OptionJoin returns a closure around given fs.
+//
+// Iff there are no fs, a nop.Option is returned, and
+// iff there is only one fs, this single fs is returned.
+//
+// Evaluate the returned function in order to apply its effect.
+func OptionJoin(fs ...Option) Option {
+	switch len(fs) {
+	case 0:
+		return func(any interface{}) Opt { return nopOpt }
+	case 1:
+		return fs[0]
+	default:
+		return func(any interface{}) Opt {
+			prev := make([]Opt, 0, len(fs))
+			for _, option := range fs {
+				prev = append(prev, option(any))
+			}
+			return func() Opt {
+				return undo(prev...)
+			}
+		}
+	}
+}
+
+// ===========================================================================
+
+// Set sets all options as the new option
+// when the returned Option is applied.
+func (option *Option) Set(options ...Option) Option {
+	return func(any interface{}) Opt {
+		prev := *option
+		*option = OptionJoin(options...)
+		return func() Opt {
+			return (*option).Set(prev)(any)
+		}
+	}
+}
+
+// Add adds all options before the existing option
+// when the returned Option is applied.
+func (option *Option) Add(options ...Option) Option {
+	if option == nil || *option == nil {
+		return (*option).Set(options...)
+	}
+	return func(any interface{}) Opt {
+		prev := *option
+		*option = OptionJoin(append(options, prev)...)
+		return func() Opt {
+			return (*option).Set(prev)(any)
+		}
+	}
+}
+
+// ===========================================================================
+
+// OptionIt returns an Option function
+// which effects the Join of the given its
+// when the returned Option is applied
+// and returns the default, namely: its undo Opt.
+//
+// OptionIt may look like a convenient wrapper.
+//
+//  Just beware: OptIt violates the option contract!
+//  No working undo Opt is returned - only a nop.Opt.
+func OptionIt(its ...It) Option {
+	return func(any interface{}) Opt {
+		return OptIt(its...)()
+	}
+}
+
+// ===========================================================================
