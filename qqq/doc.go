@@ -19,11 +19,13 @@
 // Useful where other packages need to control verbosity applicationwide.
 //
 // `qqq.main.init`.go has a super-simple init() function overriding defaults
-// of the standard package. Useful in main() packages!
-//
-// The idea and naming were inspired by a talk I listened to.
-// TODO: Find and supply reference to the original author.
+// of the standard package. Most useful in /cmd main() packages!
 //
 // Note: Intentionally, log.Fatal is not included.
-// Its use in packages is bad practice IMO.
+// IMO its use in packages is bad practice.
+//
+// The idea and the use of qqq as name were inspired by a talk I once listened to.
+// TODO: Find and supply reference to the original author.
+//
+// Be a happy gopher :-)
 package qqq
