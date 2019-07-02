@@ -65,7 +65,7 @@ func (ok *Ok) Set(oks ...Ok) Option {
 	}
 }
 
-// Add adds all oks before the existing ok
+// Add appends all oks to the existing ok
 // when the returned Option is applied.
 func (ok *Ok) Add(oks ...Ok) Option {
 	if ok == nil || *ok == nil {
@@ -73,7 +73,7 @@ func (ok *Ok) Add(oks ...Ok) Option {
 	}
 	return func(any interface{}) Opt {
 		prev := *ok
-		*ok = OkJoin(append(oks, prev)...)
+		*ok = OkJoin(append([]Ok{prev}, oks...)...)
 		return func() Opt {
 			return (*ok).Set(prev)(any)
 		}

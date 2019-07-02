@@ -60,7 +60,7 @@ func (opt *Opt) Set(opts ...Opt) Option {
 	}
 }
 
-// Add adds all opts before the existing opt
+// Add appends all opts to the existing opt
 // when the returned Option is applied.
 func (opt *Opt) Add(opts ...Opt) Option {
 	if opt == nil || *opt == nil {
@@ -68,7 +68,7 @@ func (opt *Opt) Add(opts ...Opt) Option {
 	}
 	return func(any interface{}) Opt {
 		prev := *opt
-		*opt = OptJoin(append(opts, prev)...)
+		*opt = OptJoin(append([]Opt{prev}, opts...)...)
 		return func() Opt {
 			return (*opt).Set(prev)(any)
 		}

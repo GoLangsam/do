@@ -57,7 +57,7 @@ func (it *It) Set(its ...It) Option {
 	}
 }
 
-// Add adds all its before the existing It action
+// Add appends all its to the existing It action
 // when the returned Option is applied.
 func (it *It) Add(its ...It) Option {
 	if it == nil || *it == nil {
@@ -65,7 +65,7 @@ func (it *It) Add(its ...It) Option {
 	}
 	return func(any interface{}) Opt {
 		prev := *it
-		*it = ItJoin(append(its, prev)...)
+		*it = ItJoin(append([]It{prev}, its...)...)
 		return func() Opt {
 			return (*it).Set(prev)(any)
 		}

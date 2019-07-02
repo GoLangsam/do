@@ -65,7 +65,7 @@ func (nok *Nok) Set(noks ...Nok) Option {
 	}
 }
 
-// Add adds all noks before the receiver nok
+// Add appends all noks to the existing nok
 // when the returned Option is applied.
 func (nok *Nok) Add(noks ...Nok) Option {
 	if nok == nil || *nok == nil {
@@ -73,7 +73,7 @@ func (nok *Nok) Add(noks ...Nok) Option {
 	}
 	return func(any interface{}) Opt {
 		prev := *nok
-		*nok = NokJoin(append(noks, prev)...)
+		*nok = NokJoin(append([]Nok{prev}, noks...)...)
 		return func() Opt {
 			return (*nok).Set(prev)(any)
 		}

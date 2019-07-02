@@ -67,7 +67,7 @@ func (err *Err) Set(errs ...Err) Option {
 	}
 }
 
-// Add adds all errs before the existing err
+// Add appends all errs to the existing err
 // when the returned Option is applied.
 func (err *Err) Add(errs ...Err) Option {
 	if err == nil || *err == nil {
@@ -75,7 +75,7 @@ func (err *Err) Add(errs ...Err) Option {
 	}
 	return func(any interface{}) Opt {
 		prev := *err
-		*err = ErrJoin(append(errs, prev)...)
+		*err = ErrJoin(append([]Err{prev}, errs...)...)
 		return func() Opt {
 			return (*err).Set(prev)(any)
 		}
