@@ -6,7 +6,8 @@
 //
 // I love to be informative - and even give metadata about my content anything
 //  use TypeName to get the name of the type of my content
-//  use TypePkgName to get the package name of the type of my content
+//  use TypePkgPath to get the package name of the type of my content
+//  use TypeSize to get the size (in bytes) of the type of my content
 //  use TypeString to get a 'nick-name' of the type of my content
 //  use TypeKind to get the Kind of the type of my content ( int, struct, func, ...)
 //  use TypeIsComparable ...
@@ -28,6 +29,12 @@ func TypeName(any interface{}) string {
 func TypePkgPath(any interface{}) string {
 	t := reflect.TypeOf(any)
 	return t.PkgPath()
+}
+
+// TypeSize returns the `reflect.TypeOf(any).Size()`
+func TypeSize(any interface{}) uintptr {
+	t := reflect.TypeOf(any)
+	return t.Size()
 }
 
 // TypeString returns the `reflect.TypeOf(any).String()`
