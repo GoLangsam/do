@@ -133,7 +133,7 @@ func WithDeadline(deadline time.Time) (ctx context.Context, cancel context.Cance
 
 	var noNeed context.CancelFunc
 	ctx, noNeed = context.WithDeadline(parent, deadline) // CancelFunc - no need
-	_ = noNeed // silence go vet
+	_ = noNeed                                           // silence go vet
 
 	go waiter(parent, ctx, cancel)
 
@@ -148,4 +148,19 @@ func WithDeadline(deadline time.Time) (ctx context.Context, cancel context.Cance
 // Note: WithTimeout is simply a convenience for `WithDeadline(time.Now().Add(timeout))`.
 func WithTimeout(timeout time.Duration) (ctx context.Context, cancel context.CancelFunc) {
 	return WithDeadline(time.Now().Add(timeout))
+}
+
+// Done returns a do.Nok which returns false
+// unless the given context has been cancelled.
+//
+// Done is a convenience.
+func Done(ctx context.Context) func() bool {
+	return func() bool {
+		select {
+		case <-ctx.Done():
+			return true
+		default:
+		}
+		return false
+	}
 }
