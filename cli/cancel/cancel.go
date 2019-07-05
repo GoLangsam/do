@@ -130,7 +130,10 @@ func WithCancel() (ctx context.Context, cancel context.CancelFunc) {
 // whichever is seen first
 func WithDeadline(deadline time.Time) (ctx context.Context, cancel context.CancelFunc) {
 	parent, cancel := WithCancel()
-	ctx, _ = context.WithDeadline(parent, deadline) // CancelFunc - no need
+
+	var noNeed context.CancelFunc
+	ctx, noNeed = context.WithDeadline(parent, deadline) // CancelFunc - no need
+	_ = noNeed // silence go vet
 
 	go waiter(parent, ctx, cancel)
 
