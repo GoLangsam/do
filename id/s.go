@@ -54,7 +54,7 @@ func getFormatWidth(prefix string, anz int) string {
 }
 
 // S returns a slice of soMany size-adjusted prefixed numbered IDs: id.S.
-// For an empty prefix; right-adjusted number-strings are returned. 
+// For an empty prefix; right-adjusted number-strings are returned.
 func S(prefix string, soMany int) []string {
 
 	var s = make([]string, 0, soMany)

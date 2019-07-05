@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 /* Package scan provides some dead-simple useful scanners starting with
-    - LinesOfWords
-    - WordsPerLine
+   - LinesOfWords
+   - WordsPerLine
 */
 package scan
