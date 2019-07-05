@@ -12,13 +12,21 @@ package do
 // The null value is useful: its Do() never returns true.
 type Nok func() bool
 
-// Do applies Ok iff Ok is not nil,
-// and makes Ok an Oker.
+// Do applies Ok iff Ok is not nil
+// and returns its value - usually false,
 func (nok *Nok) Do() bool {
 	if *nok != nil {
 		return (*nok)()
 	}
 	return false
+}
+
+// Not returns the negation - usually true.
+func (nok *Nok) Not() bool {
+	if *nok != nil {
+		return !(*nok)()
+	}
+	return true
 }
 
 // ===========================================================================
