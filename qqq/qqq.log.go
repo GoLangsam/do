@@ -8,21 +8,20 @@ package qqq
 
 import "log"
 
-var se_ = log.Print
-var see = log.Println
-var sef = log.Printf
+const (
+	tab = "\t"
+	eol = "\n"
+)
 
-var di_ = log.Panic
-var die = log.Panicln
-var dif = log.Panicf
+var (
+	see = log.Println
+	sef = log.Printf
 
-var verbose bool
+	die = log.Panicln
+	dif = log.Panicf
 
-func qq_(args ...interface{}) {
-	if verbose {
-		se_(args...)
-	}
-}
+	verbose bool
+)
 
 func qqq(args ...interface{}) {
 	if verbose {
