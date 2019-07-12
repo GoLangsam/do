@@ -4,7 +4,6 @@
 
 //go:pattern "github.com/GoLangsam/do/id/s.go"
 
-// Package id provides a slice of N size-adjusted prefixed IDs.
 package id
 
 import (
@@ -53,14 +52,14 @@ func getFormatWidth(prefix string, anz int) string {
 	return "%s" + getFormatWidthPaddingZeros(int(anz))
 }
 
-// S returns a slice of soMany size-adjusted prefixed numbered IDs: id.S.
-// For an empty prefix; right-adjusted number-strings are returned.
-func S(prefix string, soMany int) []string {
+// S returns a slice of N size-adjusted prefixed numbered IDs: id.S.
+// For an empty prefix, right-adjusted number-strings are produced.
+func S(prefix string, N int) []string {
 
-	var s = make([]string, 0, soMany)
-	var f = getFormatWidth(prefix, soMany)
+	var s = make([]string, 0, N)
+	var f = getFormatWidth(prefix, N)
 
-	for i := 0; i < soMany; i++ {
+	for i := 0; i < N; i++ {
 		id := fmt.Sprintf(f, prefix, i+1)
 		s = append(s, id)
 	}
