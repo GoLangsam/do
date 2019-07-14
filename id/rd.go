@@ -15,7 +15,7 @@ package id
 
 // nextReluctantDouble literally as found in "Donald Knuth, The Art of Computer Programming chapter 7.2.2.2"
 func nextReluctantDouble(u, v int) (int, int) {
-	if u & -u == v {
+	if (u & -u) == v {
 		return u + 1, 1
 	} else {
 		return u, 2 * v
