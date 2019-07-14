@@ -34,3 +34,14 @@ func qqf(format string, args ...interface{}) {
 		sef(format, args...)
 	}
 }
+
+// usage: defer un(trace("name"))
+
+func trace(s string) string {
+	qqq(tab, "Trace =>", s, tab, "=> enter")
+	return s
+}
+
+func un(s string) {
+	qqq(tab, "Trace =>", s, tab, "<= leave")
+}
