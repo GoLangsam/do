@@ -10,9 +10,9 @@ import (
 	"github.com/GoLangsam/do/id"
 )
 
-func Example_RelucantDouble() {
+func Example_ReluctantDouble() {
 
-	for rd := range id.RelucantDouble(16) {
+	for rd := range id.ReluctantDouble(16) {
 		fmt.Println(rd)
 	}
 	// Output:
@@ -34,7 +34,7 @@ func Example_RelucantDouble() {
 	// 1
 }
 
-func Example_RelucantDouble_lines() {
+func Example_ReluctantDouble_lines() {
 	// Print the relucant doubles in lines
 	// with double length for the next one.
 
@@ -42,7 +42,7 @@ func Example_RelucantDouble_lines() {
 	Line, Bar := make([]int, 0, Len), 0
 
 	N := 2048 - 1 // 2^11 - 1 => 11 lines
-	for rd := range id.RelucantDouble(N) {
+	for rd := range id.ReluctantDouble(N) {
 		Line = append(Line, rd)
 
 		if rd > Bar { // flush

@@ -13,16 +13,25 @@ package id
 
 // M. Luby, A. Sinclair, and D. Zuckerman [Information Proc. Letters 47 (1993), page 173-180,
 
-func RelucantDoubles() <-chan int {
+// nextReluctantDouble literally as found in "Donald Knuth, The Art of Computer Programming chapter 7.2.2.2"
+func nextReluctantDouble(u, v int) (int, int) {
+	if u & -u == v {
+		return u + 1, 1
+	} else {
+		return u, 2 * v
+	}
+
+}
+
+// ===========================================================================
+
+// ReluctantDoubles sends reluctantly doubled numbers
+// on the returned channel.
+func ReluctantDoubles() <-chan int {
 	cha := make(chan int)
 	go func() {
-		for u, v := 1, 1; ; {
+		for u, v := 1, 1; ; u, v = nextReluctantDouble(u, v) {
 			cha <- v
-			if (u & -u) == v {
-				u, v = u+1, 1
-			} else {
-				u, v = u, 2*v
-			}
 		}
 	}()
 	return cha
@@ -30,17 +39,18 @@ func RelucantDoubles() <-chan int {
 
 // ===========================================================================
 
-// RelucantDouble returns the first N relucant doubled numbers
-// starting with zero.
-func RelucantDouble(N int) <-chan int {
+// ReluctantDouble sends the first N relucantly doubled numbers
+// on the returned channel.
+func ReluctantDouble(N int) <-chan int {
 	cha := make(chan int)
-	go func(cha chan<- int) {
-		x := RelucantDoubles()
-		for i := 0; i < N; i++ {
-			cha <- <-x
+	var i int
+	go func() {
+		for u, v := 1, 1; i < N; u, v = nextReluctantDouble(u, v) {
+			cha <- v
+			i++
 		}
 		close(cha)
-	}(cha)
+	}()
 	return cha
 }
 
