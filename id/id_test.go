@@ -10,6 +10,7 @@ import (
 )
 
 // ===========================================================================
+// slice
 
 func ExampleS() {
 	for _, i := range S("ID-", 4) {
@@ -23,9 +24,10 @@ func ExampleS() {
 }
 
 // ===========================================================================
+// finite channel
 
-func ExampleNameS() {
-	for i := range NameS("ID-", 4) {
+func ExampleIDs() {
+	for i := range IDs("ID-", 4) {
 		fmt.Println(i)
 	}
 	// Output:
@@ -59,7 +61,6 @@ func ExampleI() {
 }
 
 // ===========================================================================
-
 // stolen from "github.com/bradfitz/iter"
 
 func ExampleN() {

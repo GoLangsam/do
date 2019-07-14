@@ -23,7 +23,7 @@ func dup3(in <-chan int) (<-chan int, <-chan int, <-chan int) {
 }
 
 // Fibs sends successive Fibonacci numbers
-// starting with zero
+// (starting with zero)
 // on the returned channel.
 func Fibs() <-chan int {
 	x := make(chan int, 2)
@@ -44,8 +44,9 @@ func Fibs() <-chan int {
 
 // ===========================================================================
 
-// Fib returns the first N Fibonacci numbers
-// starting with zero.
+// Fib sends the first N Fibonacci numbers
+// (starting with zero)
+// on the returned channel.
 func Fib(N int) <-chan int {
 	cha := make(chan int)
 	go func(cha chan<- int) {

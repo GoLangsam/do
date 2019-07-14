@@ -10,21 +10,21 @@ import (
 
 // ===========================================================================
 
-// NameS allows to range over the first N Names:
-//    for c := range NameS("Prefix-", 100) {
+// IDs allows to range over the first N IDs:
+//    for c := range IDs("Prefix-", 100) {
 //        fmt.Println(i)
 //    }
 // ... will print Prefix-001 to Prefix-100, inclusive.
-func NameS(prefix string, N int) <-chan string {
-	names := make(chan string)
-	go func(names chan<- string, N int) {
-		defer close(names)
+func IDs(prefix string, N int) <-chan string {
+	cha := make(chan string)
+	go func(cha chan<- string, N int) {
+		defer close(cha)
 		var f = getFormatWidth(prefix, N)
 		for i := 0; i < N; i++ {
-			names <- fmt.Sprintf(f, prefix, i+1)
+			cha <- fmt.Sprintf(f, prefix, i+1)
 		}
-	}(names, N)
-	return names
+	}(cha, N)
+	return cha
 }
 
 // ===========================================================================

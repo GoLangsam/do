@@ -19,4 +19,10 @@
 // followed by a dash and a 0-padded increasing number-string,
 // e.g. "ID-01" ... "ID-13".
 // For an empty prefix, right-adjusted number-strings are produced.
+//
+// Further, there are
+//  - reluctantly doubled numbers (as found in TAOCP)
+//  - Fibonacci numbers
+//    (with an interesting channel-based implementation)
+// Finite and non-terminating iterators are supplied.
 package id
