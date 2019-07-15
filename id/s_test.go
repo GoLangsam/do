@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:pattern "github.com/GoLangsam/do/id/s_test.go"
+
 package id_test
 
 import (
@@ -11,10 +13,10 @@ import (
 )
 
 // ===========================================================================
-// finite channel
+// slice
 
-func ExampleIDs() {
-	for i := range id.IDs("ID-", 4) {
+func ExampleS() {
+	for _, i := range id.S("ID-", 4) {
 		fmt.Println(i)
 	}
 	// Output:
