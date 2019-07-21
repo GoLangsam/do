@@ -14,7 +14,7 @@ package id
 //    }
 // ... will print 1 to 10, inclusive.
 func I(N int) <-chan int {
-	Is := make(chan int)
+	Is := make(chan int, maxBufCap(N))
 	go func(Is chan<- int, N int) {
 		defer close(Is)
 		for i := 1; i < N+1; i++ {

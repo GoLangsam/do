@@ -42,7 +42,7 @@ func ReluctantDoubles() <-chan int {
 // ReluctantDouble sends the first N relucantly doubled numbers
 // on the returned channel.
 func ReluctantDouble(N int) <-chan int {
-	cha := make(chan int)
+	cha := make(chan int, maxBufCap(N))
 	var i int
 	go func() {
 		for u, v := 1, 1; i < N; u, v = nextReluctantDouble(u, v) {

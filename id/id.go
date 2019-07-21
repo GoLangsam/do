@@ -16,7 +16,7 @@ import (
 //    }
 // ... will print Prefix-001 to Prefix-100, inclusive.
 func IDs(prefix string, N int) <-chan string {
-	cha := make(chan string)
+	cha := make(chan string, maxBufCap(N))
 	go func(cha chan<- string, N int) {
 		defer close(cha)
 		var f = getFormatWidth(prefix, N)
